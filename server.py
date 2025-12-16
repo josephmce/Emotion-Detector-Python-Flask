@@ -7,11 +7,10 @@ app = Flask("Emotion Detector")
 def sent_detector():
     #Retrieve the text to analyze from the request arguments
     text_to_analyze = request.args.get('textToAnalyze')
-    response = emotion_detector(text_to_analyze)
 
-    #Handle an empty input
-    if not text_to_analyze:
-        return "Input cannot be empty! Try again."
+    #Check if dominant_emotion is None, if so it's an invalid input
+    if response['dominant_emotion'] is None:
+        return "Invalid text! Please try again!", 400
 
     #Pass the text to the emotion_detector function and store the response
     response = emotion_detector(text_to_analyze)
@@ -19,7 +18,7 @@ def sent_detector():
     #Handling an error case from emotion_detector where dominant emotion is none or empty
     if response.get("dominant_emotion") is None:
 
-        return "Invalid text! Please try again."
+        return "Invalid text! Please try again.", 400
     #Extract the emotion scores
     anger = response["anger"]
     disgust = response["disgust"]
